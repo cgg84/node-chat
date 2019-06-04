@@ -19,13 +19,32 @@ io.on('connection', (socket) => {
         console.log('client disconnected');
     });
 
+    socket.emit('userConnected', {
+        from: 'Admin',
+        text: 'Welcome to our chat app!',
+        createdAt: new Date().getTime()
+    });
+
+    socket.broadcast.emit('userConnected', {
+        from: 'Admin',
+        text: 'New user joined!',
+        createdAt: new Date().getTime()
+    });
+
     socket.on('createMessage', (newMessage) => {
-        console.log('createMessage => ', newMessage);
+        console.log('createMessage => ', newMessage);        
+        // io => send to every connected socket
         io.emit('newMessage', {
             from: newMessage.from,
             text: newMessage.text,
             createdAt: new Date().getTime()
         });
+        //anyone but the sender
+        // socket.broadcast.emit('newMessage', {
+        //     from: newMessage.from,
+        //     text: newMessage.text,
+        //     createdAt: new Date().getTime()
+        // });
     });
 });
 
